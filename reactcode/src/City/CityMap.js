@@ -21,7 +21,7 @@ export default class Map extends React.Component {
     }
 
     handleSearch = () => {
-        const search_url = 'http://localhost:8000/searchCities/?city_id=' + 'BOM'
+        const search_url = 'http://localhost:8000/searchCities/?city_id=' + this.state.searchId
         axios.get(search_url)
             .then(resp => {
                 console.log('Response', resp.data.data)
