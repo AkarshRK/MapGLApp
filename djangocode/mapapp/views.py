@@ -29,7 +29,6 @@ def update_city_database(request):
     # updating databse 
     with open('/home/akarsh/Desktop/MohitApp/djangocode/mapapp/json_city_data/cities.json') as f:
         cities = json.loads(f.read())
-    print("ReadReached")
     city_list = []
     for key, value in cities.items():
         city_id = value['id']

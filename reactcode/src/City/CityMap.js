@@ -115,7 +115,7 @@ export default class Map extends React.Component {
                                 <Form>
                                     <Form.Group controlId="formBasicInput">
                                         <Form.Label>City ID (Example: BOM, IXD,...)</Form.Label>
-                                        <Form.Control type="email" placeholder="Enter City ID" value={searchId} onChange={e => this.setState({ searchId: e.target.value })} />
+                                        <Form.Control type="city" placeholder="Enter City ID" value={searchId} onChange={e => this.setState({ searchId: e.target.value })} />
                                         <Form.Text className="text-muted">
                                             Please enter the city ID above to search.
                                         </Form.Text>
