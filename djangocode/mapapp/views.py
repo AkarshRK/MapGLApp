@@ -12,18 +12,21 @@ import datetime
 import statistics
 from . import models
 import random
-def Rand(start, end, num): 
-    res = [] 
-  
-    for j in range(num): 
-        res.append(random.randint(start, end)) 
-  
-    return res 
+from django.db.models import Count
+
+
+def Rand(start, end, num):
+    res = []
+
+    for j in range(num):
+        res.append(random.randint(start, end))
+
+    return res
 
 
 @csrf_exempt
 def update_city_database(request):
-    print("Reached")
+    # updating databse 
     with open('/home/akarsh/Desktop/MohitApp/djangocode/mapapp/json_city_data/cities.json') as f:
         cities = json.loads(f.read())
     print("ReadReached")
@@ -59,14 +62,27 @@ def update_city_database(request):
 
 @csrf_exempt
 def get_city(request):
-    result = models.Cities.objects.filter(city_id='BOM').values('lon','lat','country_name','name') 
+    result = models.Cities.objects.filter(city_id='BOM').values(
+        'lon', 'lat', 'country_name', 'name', "con_id")
     country_name = result[0]['country_name']
-    country_cities = models.Cities.objects.filter(country_name=country_name).values('lon','lat','city_id','country_name', 'name') 
-    random_indexes = Rand(0,len(country_cities),5)
+    country_cities = models.Cities.objects.filter(country_name=country_name).values(
+        'lon', 'lat', 'city_id', 'country_name', 'name')
+    random_indexes = random.sample(range(1, len(country_cities)), 5)
 
     geojsonformat = {'type': 'FeatureCollection'}
     features = []
-    print(country_cities)
+    # appending default user input's city id
+    features.append({
+        'type': 'Feature',
+        'geometry': {
+                'type': 'Point',
+                'coordinates': [result[0]['lon'], result[0]['lat']]
+        },
+        'properties': {
+            'title': result[0]['name']
+        }
+    })
+    # generating geojson format
     for i in random_indexes:
         lat = country_cities[i]['lat']
         lon = country_cities[i]['lon']
@@ -83,10 +99,40 @@ def get_city(request):
             }
         }
         features.append(feature)
+
+     # Continents
+    cont_ids = ["north-america", "south-america", "asia",
+                "oceania", "antarctica", "europe", "africa"]
+    # removing user input as it is already included
+    cont_ids.remove(result[0]['con_id'])
+    random_cont_indexes = random.sample(range(1, len(cont_ids)), 5)
+    diff_cont_ids = [cont_ids[i] for i in random_cont_indexes]
+    distinct = models.Cities.objects.filter(con_id__in=diff_cont_ids).values('lon', 'lat', 'city_id', 'country_name', 'name', 'con_id').annotate(
+        con_id_count=Count('con_id')).filter(con_id_count=1)
+    cont_cities = models.Cities.objects.filter(con_id__in=[item['con_id'] for item in distinct]).values(
+        'lon', 'lat', 'city_id', 'country_name', 'name', 'con_id')
+
+    # generating geojson format
+    for i in random_cont_indexes:
+        lat = cont_cities[i]['lat']
+        lon = cont_cities[i]['lon']
+        name = cont_cities[i]['name']
+        feature = {}
+        feature = {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [lon, lat]
+            },
+            'properties': {
+                'title': name
+            }
+        }
+        features.append(feature)
+
     geojsonformat['features'] = features
-        
-        
 
     return JsonResponse({
-        "data":  geojsonformat
+        "data":  geojsonformat,
+        "status": "success"
     }, safe=False)

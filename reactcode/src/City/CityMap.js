@@ -1,12 +1,9 @@
 import React from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { Row, Col, Card, Table, Form, Button } from 'react-bootstrap';
+import { Row, Col, Card, Form, Button } from 'react-bootstrap';
 
 import Aux from "../hoc/_Aux";
-import './CityMap.scss';
-import { map, get } from '../common-libraries'
-import classNames from "classnames";
 import axios from 'axios'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYWthcnNoa2hhdGFnYWxsaSIsImEiOiJja2w0bDc4bmcxY2FmMzBvNDRwM2hxa24xIn0.D9WWt3t-fYVOXSYpCCLLTg';
@@ -19,7 +16,7 @@ export default class Map extends React.Component {
             geojson: { "type": "FeatureCollection", 
                        "features": []
                      },
-            searchId: 'BOM'
+            searchId: ''
         }
     }
 
@@ -52,8 +49,8 @@ export default class Map extends React.Component {
         this.map = new mapboxgl.Map({
             container: this.mapContainer,
             style: 'mapbox://styles/mapbox/streets-v11',
-            center: [-96, 37.8],
-            zoom: 3
+            center: [77.412615, 23.259933],
+            zoom: 4
         });
 
         this.map.on('load', () => {
@@ -112,13 +109,13 @@ export default class Map extends React.Component {
                     <Col >
                         <Card>
                             <Card.Header>
-                                <Card.Title as="h5">Input</Card.Title>
+                                <Card.Title as="h5">City Search</Card.Title>
                             </Card.Header>
                             <Card.Body>
                                 <Form>
-                                    <Form.Group controlId="formBasicEmail">
-                                        <Form.Label>City ID (Example: BOM, SQP,...)</Form.Label>
-                                        <Form.Control type="email" placeholder="Enter email" value={searchId} onChange={e => this.setState({ searchId: e.target.value })} />
+                                    <Form.Group controlId="formBasicInput">
+                                        <Form.Label>City ID (Example: BOM, IXD,...)</Form.Label>
+                                        <Form.Control type="email" placeholder="Enter City ID" value={searchId} onChange={e => this.setState({ searchId: e.target.value })} />
                                         <Form.Text className="text-muted">
                                             Please enter the city ID above to search.
                                         </Form.Text>
