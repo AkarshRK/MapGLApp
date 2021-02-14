@@ -12,6 +12,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiYWthcnNoa2hhdGFnYWxsaSIsImEiOiJja2w0bDc4bmcxY
 export default class Map extends React.Component {
     constructor(props) {
         super(props);
+        //Initial state
         this.state = {
             geojson: { "type": "FeatureCollection", 
                        "features": []
@@ -21,6 +22,8 @@ export default class Map extends React.Component {
     }
 
     handleSearch = () => {
+        /* Function to get the search results from backend and updates the map via state update
+           by calling loadMarkers() function after updating state */
         const search_url = 'http://localhost:8000/searchCities/?city_id=' + this.state.searchId
         axios.get(search_url)
             .then(resp => {
@@ -39,13 +42,14 @@ export default class Map extends React.Component {
     }
 
     loadMarkers = () => {
-        console.log('loadedmarkers', this.state.geojson)
+        // function to load geojson into source of map as soon the data is received from backend 
         this.map.getSource('points').setData(this.state.geojson);
     }
 
 
 
     componentDidMount() {
+        // as soon as the component is mounted the map image is loaded and a layer is formed
         this.map = new mapboxgl.Map({
             container: this.mapContainer,
             style: 'mapbox://styles/mapbox/streets-v11',
