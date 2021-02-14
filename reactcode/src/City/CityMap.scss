@@ -1,0 +1,53 @@
+@import "../assets/scss/style.scss";
+.bootstrap-table {
+    .dropdown {
+      height: 70px;
+      .dropdown-toggle {
+        margin: -2px 0 0 4px;
+      }
+    }
+    .btn {
+      padding: 0;
+      margin-bottom: 0;
+      margin-right: 0;
+      border: none;
+      &:after {
+        right: -12px !important;
+      }
+      &:focus,
+      &:active,
+      &:hover {
+        text-decoration: none;
+      }
+    }
+    .main-search {
+      margin-left: 5px;
+      .input-group-text {
+        line-height: 1;
+      }
+    }
+  
+    .btn > i {
+      margin-right: -12px;
+    }
+
+    &.positive-text {
+        color: #13ac13;
+        font-weight: bold;
+    }
+
+    &.negative-text {
+      color: #d10e0e;
+      font-weight: bold;
+   }
+
+   &.outlier-text {
+    color: #c7c406;
+    font-weight: bold;
+  }
+
+   td{
+    text-shadow:  0 0 1px rgb(0, 0, 0);  
+  }
+
+  }
