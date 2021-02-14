@@ -59,16 +59,34 @@ def update_city_database(request):
 
 @csrf_exempt
 def get_city(request):
-    # with open('/home/akarsh/Desktop/MohitApp/djangocode/mapapp/json_city_data/cities.json') as f:
-    #     cities = json.loads(f.read())
-    result = models.Cities.objects.filter(city_id='BOM').values('lon','lat','city_id','country_name') 
+    result = models.Cities.objects.filter(city_id='BOM').values('lon','lat','country_name','name') 
     country_name = result[0]['country_name']
-    country_cities = models.Cities.objects.filter(country_name=country_name).values('lon','lat','city_id','country_name') 
+    country_cities = models.Cities.objects.filter(country_name=country_name).values('lon','lat','city_id','country_name', 'name') 
     random_indexes = Rand(0,len(country_cities),5)
+
+    geojsonformat = {'type': 'FeatureCollection'}
+    features = []
+    print(country_cities)
     for i in random_indexes:
-        geojsonformat = {}
+        lat = country_cities[i]['lat']
+        lon = country_cities[i]['lon']
+        name = country_cities[i]['name']
+        feature = {}
+        feature = {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [lon, lat]
+            },
+            'properties': {
+                'title': name
+            }
+        }
+        features.append(feature)
+    geojsonformat['features'] = features
+        
         
 
     return JsonResponse({
-        "data":  random_indexes
+        "data":  geojsonformat
     }, safe=False)
