@@ -61,7 +61,8 @@ def update_city_database(request):
 
 @csrf_exempt
 def get_city(request):
-    result = models.Cities.objects.filter(city_id='BOM').values(
+    search_city_id = request.GET.get('city_id')
+    result = models.Cities.objects.filter(city_id=search_city_id).values(
         'lon', 'lat', 'country_name', 'name', "con_id")
     country_name = result[0]['country_name']
     country_cities = models.Cities.objects.filter(country_name=country_name).values(
